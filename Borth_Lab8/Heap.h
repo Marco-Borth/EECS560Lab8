@@ -2,16 +2,16 @@
  *
  * File Name:  Heap.h
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
+ * Assignment:   EECS 560 Lab 8 – Implementation of Maxmin Heap
  * Description:  Heap Template Class is defined as either a Min Heap or Max Heap.
- * Date: 3/24/20
+ * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
 
 #ifndef HEAP_H
 #define HEAP_H
 
-#include "Person.h"
+#include "Game.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -25,14 +25,7 @@ private:
   T* m_arr;
   int m_size, m_heapSize;
   int kary;
-  string priority;
-
-/*
-* @pre upHeap or add must call upHeap.
-* @param index is a valid int between 0 and m_size.
-* @post swaps m_arr[index] with its parent BinaryNode if m_arr[parent] < m_arr[index].
-*/
-  void upHeap(int index);
+  string priority, approach;
 
 /*
 * @pre downHeap or remove must call downHeap.
@@ -72,6 +65,8 @@ public:
 
   void setPriority(string mode);
 
+  void setApproach(string method);
+
   T getEntry(int index);
 
   int getSize();
@@ -109,8 +104,6 @@ public:
   void add(T data);
 
   void bottomUpHeapify();
-
-  void addTopDown(T data);
 
 /*
 * @pre none.

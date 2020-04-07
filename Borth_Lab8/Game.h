@@ -1,24 +1,24 @@
 /* -----------------------------------------------------------------------------
  *
- * File Name:  Person.h
+ * File Name:  Game.h
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
- * Description:  Patient Class is defined.
- * Date: 3/31/20
+ * Assignment:   Lab 8 – Implementation of Maxmin Heap
+ * Description:  Game Class is defined.
+ * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
 
-#ifndef PERSON_H
-#define PERSON_H
+#ifndef GAME_H
+#define GAME_H
 
 #include <string>
 #include <iostream>
 using namespace std;
 
-class Person
+class Game
 {
 private:
-  string firstName, lastName;
+  string title;
   int priority;
 
 public:
@@ -26,12 +26,7 @@ public:
 /**
 * @return the firstName of the Patient.
 */
-  string getFirstName() const;
-
-/**
-* @return the lastName of the Patient.
-*/
-  string getLastName() const;
+  string getTitle() const;
 
 /**
 * @return the urgency of the Patient.
@@ -42,12 +37,12 @@ public:
 * @param first, last, and symptoms are valid strings, years and rating are valid ints.
 * @post construct Patient with all of its characteristics defined.
 */
-  Person(string first, string last, int number);
+  Game(string name, int number);
 
 /**
 * @post deletes Patient and its characteristicss.
 */
-  ~Person();
+  ~Game();
 };
 
 #endif

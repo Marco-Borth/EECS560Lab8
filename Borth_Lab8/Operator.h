@@ -2,7 +2,7 @@
  *
  * File Name:  Operator.h
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
+ * Assignment:   Lab 8 – Implementation of Maxmin Heap
  * Description:  Operator Class is defined.
  * Date: 3/24/20
  *
@@ -12,7 +12,7 @@
 #define OPERATOR_H
 
 #include "Heap.h"
-#include "Person.h"
+#include "Game.h"
 #include <string>
 #include <stdexcept>
 #include <iostream>
@@ -25,14 +25,12 @@ class Operator
 private:
   int option;
 
-  string doctersFile, paitientsFile;
+  string file;
   string input;
 
-  Heap <Person*> DoctorNetwork;
-  Heap <Person*> PatientNetwork;
+  Heap <Game*> GameCenter;
 
-  Person* tempDoctor;
-  Person* tempPatient;
+  Game* tempGame;
 
   ifstream inFile;
 
@@ -51,18 +49,10 @@ public:
 
   void MainMenu();
 
-  void printDoctorTerminal();
-
-  void printPatientPortal();
-
-  void PatientManagementSystem();
-
-  void DoctorManagementSystem();
-
 /*
 * @pre filename is a string.
 * @post Operator object is constructed, file == filename.
 */
-  Operator(string file1, string file2);
+  Operator(string file1);
 };
 #endif

@@ -2,9 +2,9 @@
  *
  * File Name:  main.cpp
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
- * Description:  This lab will contain an implementation of a Min Heap and a Max Heap.
- * Date: 3/24/20
+ * Assignment:   EECS 560 Lab 8 – Implementation of Maxmin Heap
+ * Description:  This lab will contain an implementation of a MaxMin Heap.
+ * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
 //Start your program.
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		Executive exec(argv[1], argv[2]);
+		Executive exec(argv[1]);
 		exec.run();
 	}
 

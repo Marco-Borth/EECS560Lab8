@@ -2,9 +2,9 @@
  *
  * File Name:  Executive.h
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
+ * Assignment:   EECS 560 Lab 8 – Implementation of Maxmin Heap
  * Description:  Executive Class is defined.
- * Date: 3/24/20
+ * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
 #ifndef EXECUTIVE_H
@@ -17,7 +17,7 @@ using namespace std;
 class Executive
 {
 private:
-	string file1, file2;
+	string file1;
 
 public:
 /**
@@ -30,7 +30,7 @@ public:
 * @pre filename is a string.
 * @post Executive object is constructed.
 */
-	Executive(string file1name, string file2name);
+	Executive(string file1name);
 };
 
 #endif

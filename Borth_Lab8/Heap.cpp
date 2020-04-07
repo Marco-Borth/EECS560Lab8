@@ -2,9 +2,9 @@
  *
  * File Name:  Heap.cpp
  * Author: Marco Borth
- * Assignment:   EECS 560 Lab 7 – Min Heap and Max Heap
+ * Assignment:   EECS 560 Lab 8 – Implementation of Maxmin Heap
  * Description:  Heap methods are defined, regardless of priority.
- * Date: 3/24/24
+ * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
 
@@ -15,19 +15,7 @@ Heap<T>::Heap() {
 	m_arr = new T [m_size];
 	kary = 2;
 	priority = "";
-}
-
-template <typename T>
-Heap<T>::Heap(int k, string mode){
-	m_size = 1;
-	m_heapSize = 0;
-	m_arr = new T [m_size];
-	if(k > 2)
-		kary = k;
-	else
-		kary = 2;
-
-	priority = mode;
+	approach = "";
 }
 
 template <typename T>
@@ -58,6 +46,11 @@ void Heap<T>::setPriority(string mode){
 }
 
 template <typename T>
+void Heap<T>::setApproach(string method){
+	priority = method;
+}
+
+template <typename T>
 int Heap<T>::getNumberOfNodes() const {
 	return m_heapSize;
 }
@@ -75,7 +68,7 @@ template <typename T>
 int Heap<T>::getHeight() const {
 	int height = 0;
 
-	while (3 * height + 3 < m_size) {
+	while (kary * height + 1 < m_size) {
 		height++;
 	}
 
@@ -119,8 +112,18 @@ void Heap<T>::add(T data) {
 		resize();
 		add(data);
 	} else {
-		m_arr[m_heapSize] = data;
-		m_heapSize++;
+		if (approach == "topdown") {
+			m_arr[m_heapSize] = data;
+			int parent = (m_heapSize - 1) / kary;
+			while(parent > 0) {
+				compareFamily(parent);
+				parent = (m_heapSize - 1) / kary;
+			}
+			m_heapSize++;
+		} else {
+			m_arr[m_heapSize] = data;
+			m_heapSize++;
+		}
 	}
 }
 
@@ -143,69 +146,79 @@ void Heap<T>::compareFamily(int parentIndex) {
 	if (kary * parentIndex + 1 < m_size) {
 		int childIndex = kary * parentIndex + 1;
 		if (priority == "max") {
-			for(int j = 1; j < kary; j++) {
-				if(kary * parentIndex + j + 1 < m_size) {
-					if (m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + j + 1]->getPriority()) {
-						childIndex = kary * parentIndex + j + 1;
+			for (int i = 1; i < kary; i++) {
+				if (kary * parentIndex + i + 1 < m_size) {
+					if (m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) {
+						childIndex = kary * parentIndex + i + 1;
 					}
 				}
 			}
 
-			if(m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) {
+			if (m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) {
 				T temp = m_arr[parentIndex];
 				m_arr[parentIndex] = m_arr[childIndex];
 				m_arr[childIndex] = temp;
 				compareFamily(childIndex);
 			}
 		} else if (priority == "min") {
-			for(int j = 1; j < kary; j++) {
-				if(kary * parentIndex + j + 1 < m_size) {
-				  if (m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + j + 1]->getPriority()) {
-					  childIndex = kary * parentIndex + j + 1;
+			for (int i = 1; i < kary; i++) {
+				if (kary * parentIndex + i + 1 < m_size) {
+				  if (m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) {
+					  childIndex = kary * parentIndex + i + 1;
 				  }
 			  }
 			}
 
-		  if(m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) {
+		  if (m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) {
 			  T temp = m_arr[parentIndex];
 			  m_arr[parentIndex] = m_arr[childIndex];
 			  m_arr[childIndex] = temp;
 			  compareFamily(childIndex);
+			}
+		} else if (priority ==  "manmin") {
+			for (int i = 1; i < kary; i++) {
+				if (kary * parentIndex + i + 1 < m_size) {
+					if ( (getHeight() % 2 == 0 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
+							 (getHeight() % 2 == 1 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
+						  childIndex = kary * parentIndex + i + 1;
+					}
+				}
+			}
+
+			if( (getHeight() % 2 == 0 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
+					(getHeight() % 2 == 1 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
+							T temp = m_arr[parentIndex];
+							m_arr[parentIndex] = m_arr[childIndex];
+							m_arr[childIndex] = temp;
+							compareFamily(childIndex);
+			}
+		} else if (priority ==  "minmax") {
+			for (int i = 1; i < kary; i++) {
+				if (kary * parentIndex + i + 1 < m_size) {
+					if ( (getHeight() % 2 == 1 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
+							 (getHeight() % 2 == 0 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
+						  childIndex = kary * parentIndex + i + 1;
+					}
+				}
+			}
+
+			if( (getHeight() % 2 == 1 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
+					(getHeight() % 2 == 0 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
+							T temp = m_arr[parentIndex];
+							m_arr[parentIndex] = m_arr[childIndex];
+							m_arr[childIndex] = temp;
+							compareFamily(childIndex);
 			}
 		}
 	}
 }
 
 template <typename T>
-void Heap<T>::addTopDown(T data) {
-	if (m_heapSize == m_size) {
-		resize();
-		add(data);
-	} else {
-		m_arr[m_heapSize] = data;
-		upHeap(m_heapSize);
-		m_heapSize++;
-	}
-}
-
-template <typename T>
-void Heap<T>::upHeap(int index) {
-	int parent = (index - 1) / kary;
-
-	if (index && m_arr[parent]->getPriority() < m_arr[index]->getPriority()) {
-		T temp = m_arr[index];
-		m_arr[index] = m_arr[parent];
-		m_arr[parent] = temp;
-
-		upHeap(parent);
-	}
-}
-
-template <typename T>
 void Heap<T>::clear() {
 	if (!isEmpty()) {
-		//for(int i = 0; i < m_size; i++)
-			//delete m_arr[i];
+		for(int i = 0; i < m_size; i++) {
+			delete m_arr[i];
+		}
 	}
 
 	m_heapSize = 0;
