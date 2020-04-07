@@ -3,7 +3,7 @@
  * File Name:  Heap.cpp
  * Author: Marco Borth
  * Assignment:   EECS 560 Lab 8 – Implementation of Maxmin Heap
- * Description:  Heap methods are defined, regardless of priority.
+ * Description:  Heap methods are defined, regardless of priority or approach.
  * Date: 4/7/20
  *
  ---------------------------------------------------------------------------- */
