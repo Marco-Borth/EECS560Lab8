@@ -89,6 +89,8 @@ public:
 */
   int getHeight() const;
 
+  int getNodeDepth(int index) const;
+
 /*
 * @pre none.
 * @post peekTop returns m_arr[0].

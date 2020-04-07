@@ -76,6 +76,17 @@ int Heap<T>::getHeight() const {
 }
 
 template <typename T>
+int Heap<T>::getNodeDepth(int index) const {
+	int height = 0;
+
+	while (kary * height < index) {
+		height++;
+	}
+
+	return height;
+}
+
+template <typename T>
 int Heap<T>::getSize() {
 	return m_size;
 }
@@ -145,6 +156,13 @@ template <typename T>
 void Heap<T>::compareFamily(int parentIndex) {
 	if (kary * parentIndex + 1 < m_size) {
 		int childIndex = kary * parentIndex + 1;
+		int greatGrandParentIndex = 0;
+		bool hasGrandparents = false;
+		if (getNodeDepth(parentIndex) > 1) {
+			hasGrandparents = true;
+			greatGrandParentIndex = ( ( (parentIndex - 1) / kary ) - 1 ) / kary;
+		}
+
 		if (priority == "max") {
 			for (int i = 1; i < kary; i++) {
 				if (kary * parentIndex + i + 1 < m_size) {
@@ -178,36 +196,56 @@ void Heap<T>::compareFamily(int parentIndex) {
 		} else if (priority ==  "manmin") {
 			for (int i = 1; i < kary; i++) {
 				if (kary * parentIndex + i + 1 < m_size) {
-					if ( (getHeight() % 2 == 0 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
-							 (getHeight() % 2 == 1 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
+					if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
+							 (getNodeDepth(parentIndex) % 2 == 1 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
 						  childIndex = kary * parentIndex + i + 1;
 					}
 				}
 			}
 
-			if( (getHeight() % 2 == 0 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
-					(getHeight() % 2 == 1 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
+			if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
+					(getNodeDepth(parentIndex) % 2 == 1 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
 							T temp = m_arr[parentIndex];
 							m_arr[parentIndex] = m_arr[childIndex];
 							m_arr[childIndex] = temp;
 							compareFamily(childIndex);
+			}
+
+			if (hasGrandparents) {
+				if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[greatGrandParentIndex]->getPriority() < m_arr[parentIndex]->getPriority()) ||
+						 (getNodeDepth(parentIndex) % 2 == 1 && m_arr[greatGrandParentIndex]->getPriority() > m_arr[parentIndex]->getPriority()) ) {
+							 T temp = m_arr[greatGrandParentIndex];
+							 m_arr[greatGrandParentIndex] = m_arr[parentIndex];
+							 m_arr[parentIndex] = temp;
+							 compareFamily(greatGrandParentIndex);
+				}
 			}
 		} else if (priority ==  "minmax") {
 			for (int i = 1; i < kary; i++) {
 				if (kary * parentIndex + i + 1 < m_size) {
-					if ( (getHeight() % 2 == 1 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
-							 (getHeight() % 2 == 0 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
+					if ( (getNodeDepth(parentIndex) % 2 == 1 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
+							 (getNodeDepth(parentIndex) % 2 == 0 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
 						  childIndex = kary * parentIndex + i + 1;
 					}
 				}
 			}
 
-			if( (getHeight() % 2 == 1 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
-					(getHeight() % 2 == 0 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
+			if ( (getNodeDepth(parentIndex) % 2 == 1 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
+					(getNodeDepth(parentIndex) % 2 == 0 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
 							T temp = m_arr[parentIndex];
 							m_arr[parentIndex] = m_arr[childIndex];
 							m_arr[childIndex] = temp;
 							compareFamily(childIndex);
+			}
+
+			if (hasGrandparents) {
+				if ( (getNodeDepth(parentIndex) % 2 == 1 && m_arr[greatGrandParentIndex]->getPriority() < m_arr[parentIndex]->getPriority()) ||
+						 (getNodeDepth(parentIndex) % 2 == 0 && m_arr[greatGrandParentIndex]->getPriority() > m_arr[parentIndex]->getPriority()) ) {
+							 T temp = m_arr[greatGrandParentIndex];
+							 m_arr[greatGrandParentIndex] = m_arr[parentIndex];
+							 m_arr[parentIndex] = temp;
+							 compareFamily(greatGrandParentIndex);
+				}
 			}
 		}
 	}
