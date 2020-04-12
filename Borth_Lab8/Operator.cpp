@@ -178,43 +178,23 @@ void Operator::run() {
             cout << "\n\n> Output: ERROR! There are no more Paitents in the Hospital Queue.\n\n";
           }
         }
-        // 4- PrintGamesAtMinimumLevels - Complete!
-        else if (option == 4) {
+        // 4- PrintGamesAtMinimumLevels && 5- PrintGamesAtMaximumLevels - Complete!
+        else if (option == 4 || option == 5) {
           cout << "\nOutput: ";
           for (int i = 0; i < GameCenter.getSize(); i++) {
-            if (GameCenter.getNodeDepth(i) % 2 == 1) {
+            if (GameCenter.getNodeDepth(i) % 2 != option % 2) {
               cout << GameCenter.getEntry(i)->getTitle() << ", ";
+              cout << GameCenter.getNodeDepth(i) << ", ";
             }
           }
           cout << "\n\n";
         }
-        // 5- PrintGamesAtMaximumLevels - Complete!
-        else if (option == 5) {
-          cout << "\nOutput: ";
-          for (int i = 0; i < GameCenter.getSize(); i++) {
-            if (GameCenter.getNodeDepth(i) % 2 == 0) {
-              cout << GameCenter.getEntry(i)->getTitle() << ", ";
-            }
-          }
-          cout << "\n\n";
-        }
-        // 6- TotalMinimumDownloadedGames - Complete!
-        else if (option == 6) {
+        // 6- TotalMinimumDownloadedGames && 7- TotalMaximumDownloadedGames - Complete!
+        else if (option == 6 || option == 7) {
           int sum = 0;
           cout << "\nOutput: ";
           for (int i = 0; i < GameCenter.getSize(); i++) {
-            if (GameCenter.getNodeDepth(i) % 2 == 1) {
-              sum = sum + GameCenter.getEntry(i)->getPriority();
-            }
-          }
-          cout << sum << "K\n\n";
-        }
-        // 7- TotalMaximumDownloadedGames - Complete!
-        else if (option == 7) {
-          int sum = 0;
-          cout << "\nOutput: ";
-          for (int i = 0; i < GameCenter.getSize(); i++) {
-            if (GameCenter.getNodeDepth(i) % 2 == 0) {
+            if (GameCenter.getNodeDepth(i) % 2 != option % 2) {
               sum = sum + GameCenter.getEntry(i)->getPriority();
             }
           }

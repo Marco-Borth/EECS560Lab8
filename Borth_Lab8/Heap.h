@@ -12,6 +12,7 @@
 #define HEAP_H
 
 #include "Game.h"
+#include <math.h>
 #include <string>
 #include <fstream>
 #include <iostream>

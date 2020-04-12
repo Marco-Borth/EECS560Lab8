@@ -66,23 +66,23 @@ T Heap<T>::getEntry(int index) {
 
 template <typename T>
 int Heap<T>::getHeight() const {
+	int parentIndex = m_size - 1;
 	int height = 0;
-
-	while (kary * height + 1 < m_size) {
+	while (parentIndex > 0) {
 		height++;
+		parentIndex = (parentIndex - 1) / kary;
 	}
-
 	return height;
 }
 
 template <typename T>
 int Heap<T>::getNodeDepth(int index) const {
+	int parentIndex = index;
 	int height = 0;
-
-	while (kary * height < index) {
+	while (parentIndex > 0) {
 		height++;
+		parentIndex = (parentIndex - 1) / kary;
 	}
-
 	return height;
 }
 
@@ -123,18 +123,11 @@ void Heap<T>::add(T data) {
 		resize();
 		add(data);
 	} else {
+		m_arr[m_heapSize] = data;
 		if (approach == "topdown") {
-			m_arr[m_heapSize] = data;
-			int parent = (m_heapSize - 1) / kary;
-			while(parent > 0) {
-				compareFamily(parent);
-				parent = (m_heapSize - 1) / kary;
-			}
-			m_heapSize++;
-		} else {
-			m_arr[m_heapSize] = data;
-			m_heapSize++;
+			compareFamily(getSize() - 1);
 		}
+		m_heapSize++;
 	}
 }
 
@@ -156,7 +149,7 @@ template <typename T>
 void Heap<T>::compareFamily(int parentIndex) {
 	if (kary * parentIndex + 1 < m_size) {
 		int childIndex = kary * parentIndex + 1;
-		int grandChildIndex = kary * childIndex + 1;
+		int grandParentIndex = (parentIndex - 1) / kary;
 
 		if (priority == "max") {
 			for (int i = 1; i < kary; i++) {
@@ -188,77 +181,28 @@ void Heap<T>::compareFamily(int parentIndex) {
 			  m_arr[childIndex] = temp;
 			  compareFamily(childIndex);
 			}
-		} else if (priority ==  "manmin") {
-			for (int i = 1; i < kary; i++) {
-				if (kary * parentIndex + i + 1 < m_size) {
-					if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[childIndex]->getPriority() < m_arr[kary * parentIndex + i + 1]->getPriority()) ||
-							 (getNodeDepth(parentIndex) % 2 == 1 && m_arr[childIndex]->getPriority() > m_arr[kary * parentIndex + i + 1]->getPriority()) ) {
-						  childIndex = kary * parentIndex + i + 1;
-					}
-				}
+		} else if (priority ==  "maxmin") {
+			int tempParentIndex = parentIndex;
+			while (tempParentIndex > 0) {
+				if ( (getNodeDepth(parentIndex) % 2 == 0 &&
+							m_arr[tempParentIndex]->getPriority() < m_arr[grandParentIndex]->getPriority()) ||
+						 (getNodeDepth(parentIndex) % 2 == 1 &&
+							m_arr[tempParentIndex]->getPriority() > m_arr[grandParentIndex]->getPriority()) ) {
+					 T temp = m_arr[grandParentIndex];
+					 m_arr[grandParentIndex] = m_arr[tempParentIndex];
+					 m_arr[tempParentIndex] = temp;
+					 tempParentIndex = grandParentIndex;
+					 grandParentIndex = (grandParentIndex - 1) / kary;
+					 grandParentIndex = (grandParentIndex - 1) / kary;
+				 }
 			}
-
-			if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[parentIndex]->getPriority() < m_arr[childIndex]->getPriority()) ||
-					 (getNodeDepth(parentIndex) % 2 == 1 && m_arr[parentIndex]->getPriority() > m_arr[childIndex]->getPriority()) ) {
-							T temp = m_arr[parentIndex];
-							m_arr[parentIndex] = m_arr[childIndex];
-							m_arr[childIndex] = temp;
-			}
-
-			for (int i = 1; i < kary; i++) {
-				if (kary * parentIndex + i + 1 < m_size) {
-					for (int j = 1; j < kary; i++) {
-						if (kary * (kary * parentIndex + i + 1) + j + 1 < m_size) {
-							if ( (getNodeDepth(parentIndex) % 2 == 0 &&
-										m_arr[grandChildIndex]->getPriority() < m_arr[kary * (kary * parentIndex + i + 1) + j + 1]->getPriority()) ||
-									 (getNodeDepth(parentIndex) % 2 == 1 &&
-		 								m_arr[grandChildIndex]->getPriority() > m_arr[kary * (kary * parentIndex + i + 1) + j + 1]->getPriority()) ) {
-			 						  grandChildIndex = kary * (kary * parentIndex + i + 1) + j + 1;
-							}
-						}
-					}
-				}
-			}
-
-			if ( (getNodeDepth(parentIndex) % 2 == 0 && m_arr[parentIndex]->getPriority() < m_arr[grandChildIndex]->getPriority()) ||
-					 (getNodeDepth(parentIndex) % 2 == 1 && m_arr[parentIndex]->getPriority() > m_arr[grandChildIndex]->getPriority()) ) {
-							T temp = m_arr[parentIndex];
-							m_arr[parentIndex] = m_arr[grandChildIndex];
-							m_arr[grandChildIndex] = temp;
-							compareFamily(grandChildIndex);
-			}
-
-			if (getNodeDepth(parentIndex) >= getHeight() - 1 && getHeight() > 1) {
-				int tempParentIndex = parentIndex;
-				int grandParentIndex = (parentIndex - 1) / kary;
-				while (grandParentIndex > 0) {
-					if ( (getNodeDepth(parentIndex) % 2 == 0 &&
-								m_arr[tempParentIndex]->getPriority() < m_arr[grandParentIndex]->getPriority()) ||
-							 (getNodeDepth(parentIndex) % 2 == 1 &&
-								m_arr[tempParentIndex]->getPriority() > m_arr[grandParentIndex]->getPriority()) ) {
-						 T temp = m_arr[tempParentIndex];
-						 m_arr[tempParentIndex] = m_arr[grandChildIndex];
-						 m_arr[grandChildIndex] = temp;
-						 tempParentIndex = grandParentIndex;
-						 grandParentIndex = (parentIndex - 1) / kary;
-						 grandParentIndex = (parentIndex - 1) / kary;
-					}
-				}
-			}
-
-			// End of max min compareFamily.
+			// End of maxmin compareFamily.
 		}
 	}
 }
 
 template <typename T>
 void Heap<T>::compareExtendedFamily(int parentIndex) {
-	for(int i = 0; i < m_size; i++) {
-		if (getNodeDepth(i) % 2 == 0) {
-			compareFamily(i);
-		}
-	}
-
 	int childIndex = kary * parentIndex + 1;
 	childIndex = kary * childIndex + 1;
 }
@@ -300,7 +244,15 @@ void Heap<T>::remove(int index) {
 		m_size--;
 		m_heapSize--;
 
-		bottomUpHeapify();
+		if (approach == "topdown") {
+			for(int i = 0; i < m_size; i++) {
+				if (getNodeDepth(i) % 2 == 0) {
+					compareFamily(i);
+				}
+			}
+		} else {
+			bottomUpHeapify();
+		}
 	} else
 		throw(std::runtime_error("ERROR: Heap is empty.\n"));
 }
