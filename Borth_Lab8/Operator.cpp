@@ -122,7 +122,7 @@ void Operator::run() {
             }
           }
         }
-        // 2. Treat Patient - Complete!
+        // 2- DeleteMaxDownloadedGame - Complete!
         else if (option == 2) {
           if (!GameCenter.isEmpty()) {
             tempGame = GameCenter.getEntry(0);
@@ -131,6 +131,94 @@ void Operator::run() {
           } else {
             cout << "\n\n> Output: ERROR! There are no more Games in the play store.\n\n";
           }
+        }
+        // 3- DeleteGame - Complete!
+        else if (option == 3) {
+          if (!GameCenter.isEmpty()) {
+            string title;
+            int downloads;
+
+            cout << "\n>Enter the name of the game you want to delete:\n";
+            cin >> title;
+            cout << "\n>Enter the number of downloads for the game you want to delete:\n";
+            cin >> downloads;
+
+            while(1) {
+              if(cin.fail()) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(),'\n');
+                cout << "\nERROR! Invalid Input!\n\n"; //if not an int, must try again.
+                cout << "\n>Enter the name of the game you want to delete:\n";
+                cin >> title;
+                cout << "\n>Enter the number of downloads for the game you want to delete:\n";
+                cin >> downloads;
+              } else {
+                bool recordFound = false;
+                int index = 0;
+
+                for (int i = 0; i < GameCenter.getSize(); i++) {
+                  if ( GameCenter.getEntry(i)->getTitle() == title && GameCenter.getEntry(i)->getPriority() == downloads ) {
+                    recordFound = true;
+                    index = i;
+                  }
+                }
+
+                if (recordFound) {
+                  cout << "\n\n>Output: " << GameCenter.getEntry(index)->getTitle() << " game with ";
+                  cout << GameCenter.getEntry(index)->getPriority() << "K downloads has been successfully deleted.\n\n";
+                  GameCenter.remove(index);
+                } else {
+                  cout << "\n\nEntry not Found!\n\n";
+                }
+
+                break;
+              }
+            }
+          } else {
+            cout << "\n\n> Output: ERROR! There are no more Paitents in the Hospital Queue.\n\n";
+          }
+        }
+        // 4- PrintGamesAtMinimumLevels - Complete!
+        else if (option == 4) {
+          cout << "\nOutput: ";
+          for (int i = 0; i < GameCenter.getSize(); i++) {
+            if (GameCenter.getNodeDepth(i) % 2 == 1) {
+              cout << GameCenter.getEntry(i)->getTitle() << ", ";
+            }
+          }
+          cout << "\n\n";
+        }
+        // 5- PrintGamesAtMaximumLevels - Complete!
+        else if (option == 5) {
+          cout << "\nOutput: ";
+          for (int i = 0; i < GameCenter.getSize(); i++) {
+            if (GameCenter.getNodeDepth(i) % 2 == 0) {
+              cout << GameCenter.getEntry(i)->getTitle() << ", ";
+            }
+          }
+          cout << "\n\n";
+        }
+        // 6- TotalMinimumDownloadedGames - Complete!
+        else if (option == 6) {
+          int sum = 0;
+          cout << "\nOutput: ";
+          for (int i = 0; i < GameCenter.getSize(); i++) {
+            if (GameCenter.getNodeDepth(i) % 2 == 1) {
+              sum = sum + GameCenter.getEntry(i)->getPriority();
+            }
+          }
+          cout << sum << "K\n\n";
+        }
+        // 7- TotalMaximumDownloadedGames - Complete!
+        else if (option == 7) {
+          int sum = 0;
+          cout << "\nOutput: ";
+          for (int i = 0; i < GameCenter.getSize(); i++) {
+            if (GameCenter.getNodeDepth(i) % 2 == 0) {
+              sum = sum + GameCenter.getEntry(i)->getPriority();
+            }
+          }
+          cout << sum << "K\n\n";
         }
         // 8- Exit - Complete!
         else if (option == 8) {

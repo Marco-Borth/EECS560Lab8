@@ -42,6 +42,8 @@ private:
 
   void compareFamily(int parentIndex);
 
+  void compareExtendedFamily(int parentIndex);
+
 public:
 /*
 * @pre define T object.
